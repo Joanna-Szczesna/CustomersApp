@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customers data</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<style>
+table.blue {
+  width: 95%;
+  background-color: #ffffff;
+  border-collapse: collapse;
+  border-width: 1px;
+  border-color: #004080;
+  border-style: solid;
+  color: #000000;
+}
+table.blue td, table.blue th {
+  border-width: 1px;
+  border-color: #004080;
+  border-style: solid;
+  padding: 3px;
+}
+table.blue thead {
+  background-color: #cff3fe;
+}
+
+</style>
+<div class="container">
+    <h3>All Customers</h3>
+    <table class="blue">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>PESEL Number</th>
+            <th>Email Address</th>
+            <th>Residence Address</th>
+            <th>Registered Address</th>
+            <th>Private Phone Number</th>
+            <th>Business Phone Number</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${customers}">
+            <td th:text="${customer.name}"/>
+            <td th:text="${customer.surname}"/>
+            <td th:text="${customer.peselNumber}"/>
+            <td th:text="${customer.contacts.emailAddress}"/>
+            <td th:text="${customer.contacts.residenceAddress}"/>
+            <td th:text="${customer.contacts.registeredAddress}"/>
+            <td th:text="${customer.contacts.privatePhoneNumber}"/>
+            <td th:text="${customer.contacts.businessPhoneNumber}"/>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
