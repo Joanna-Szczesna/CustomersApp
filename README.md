@@ -18,9 +18,9 @@ http://localhost:8080/customers/export
 
 ## UC:5
 
-gradle task: generateCustomersAndContacts
+CustomerGenerator
+https://github.com/Joanna-Szczesna/CustomerGenerator
 
 ## TODO:
-validation input
 polish chars
 unit tests

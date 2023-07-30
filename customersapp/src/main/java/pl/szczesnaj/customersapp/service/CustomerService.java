@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2023 Joanna Szczesna
+ * All rights reserved
+ */
+
 package pl.szczesnaj.customersapp.service;
 
 import lombok.RequiredArgsConstructor;
@@ -27,8 +32,8 @@ public class CustomerService {
         return customerRepository.findCustomerByPeselNum(peselNum).orElseThrow();
     }
 
-    public Customer addContact(CommunicationMethods contact) {
-        Customer customer = customerRepository.getReferenceById(contact.getId());
+    public Customer addContact(String peselNumber, CommunicationMethods contact) {
+        Customer customer = customerRepository.findCustomerByPeselNum(peselNumber).orElseThrow();
         customer.setContacts(contact);
         return customerRepository.save(customer);
     }

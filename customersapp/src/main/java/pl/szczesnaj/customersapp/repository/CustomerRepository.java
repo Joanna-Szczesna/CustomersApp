@@ -1,5 +1,9 @@
-package pl.szczesnaj.customersapp.repository;
+/*
+ * Copyright (c) 2023 Joanna Szczesna
+ * All rights reserved
+ */
 
+package pl.szczesnaj.customersapp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) 2023 Joanna Szczesna
+ * All rights reserved
+ */
+
 package pl.szczesnaj.customersapp.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.supercsv.io.dozer.CsvDozerBeanWriter;
 import org.supercsv.io.dozer.ICsvDozerBeanWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -11,6 +18,7 @@ import pl.szczesnaj.customersapp.model.Customer;
 import pl.szczesnaj.customersapp.service.CustomerService;
 
 import java.io.IOException;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,25 +30,31 @@ class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping(value = "/customers")
-    public List<Customer> getCustomers(@RequestParam(required = false) Integer page){
+    public List<Customer> getCustomers(@RequestParam(required = false) Integer page) {
         int pageNumber = page != null && page >= 0 ? page : 0;
         return customerService.getCustomers();
     }
 
     @GetMapping(value = "/customers/{peselNum}")
-    public Customer getCustomerByPeselNum(@PathVariable String peselNum){
+    public Customer getCustomerByPeselNum(@PathVariable String peselNum) {
         return customerService.getCustomerByPeselNum(peselNum);
     }
 
     @PostMapping(value = "/customers")
-    public Customer addCustomer(@RequestBody Customer user){
-        return customerService.addCustomer(user);
+    public ResponseEntity<Object> addCustomer(@RequestBody Customer user) {
+        Customer customer = customerService.addCustomer(user);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{peselNum}")
+                .buildAndExpand(customer.getPeselNumber())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
-
-    @PostMapping(value = "/customers/methods")
-    public Customer addCustomerWithContacts(@RequestBody CommunicationMethods contact){
-        return customerService.addContact(contact);
+    @PostMapping(value = "/customers/{peselNum}/methods")
+    public Customer addCustomerWithContacts(@PathVariable String peselNum, @RequestBody CommunicationMethods contact) {
+        return customerService.addContact(peselNum, contact);
     }
 
     @GetMapping(value = "/customers/export")
