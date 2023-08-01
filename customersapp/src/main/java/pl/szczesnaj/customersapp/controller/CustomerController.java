@@ -7,6 +7,8 @@ package pl.szczesnaj.customersapp.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,9 +33,9 @@ class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping(value = "/customers")
-    public List<Customer> getCustomers(@RequestParam(required = false) Integer page) {
+    public Page<Customer> getCustomers(@RequestParam(required = false) Integer page, Sort.Direction sort) {
         int pageNumber = page != null && page >= 0 ? page : 0;
-        return customerService.getCustomers();
+        return customerService.getCustomers(pageNumber, sort);
     }
 
     @GetMapping(value = "/customers/{peselNum}")
@@ -66,8 +69,7 @@ class CustomerController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=customers_" + currentDateTime + ".csv";
         response.setHeader(headerKey, headerValue);
-
-        List<Customer> customers = customerService.getCustomers();
+        final List<Customer> customers = customerService.getCustomersToExport();
 
         try (ICsvDozerBeanWriter beanWriter = new CsvDozerBeanWriter(response.getWriter(),
                 CsvPreference.STANDARD_PREFERENCE)) {

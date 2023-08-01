@@ -44,17 +44,26 @@ table.blue thead {
         </thead>
         <tbody>
         <tr th:each="customer : ${customers}">
-            <td th:text="${customer.name}"/>
-            <td th:text="${customer.surname}"/>
-            <td th:text="${customer.peselNumber}"/>
-            <td th:text="${customer.contacts.emailAddress}"/>
-            <td th:text="${customer.contacts.residenceAddress}"/>
-            <td th:text="${customer.contacts.registeredAddress}"/>
-            <td th:text="${customer.contacts.privatePhoneNumber}"/>
-            <td th:text="${customer.contacts.businessPhoneNumber}"/>
+            <td th:text="${customer.id}"></td>
+            <td th:text="${customer.name}"></td>
+            <td th:text="${customer.surname}"></td>
+            <td th:text="${customer.peselNumber}"></td>
+            <td th:text="${customer.contacts.emailAddress}"></td>
+            <td th:text="${customer.contacts.residenceAddress}"></td>
+            <td th:text="${customer.contacts.registeredAddress}"></td>
+            <td th:text="${customer.contacts.privatePhoneNumber}"></td>
+            <td th:text="${customer.contacts.businessPhoneNumber}"></td>
         </tr>
         </tbody>
     </table>
 </div>
+<footer>
+    Total Items: [[${totalItems}]] Page [[${currentPage}]] of [[${totalPages}]]
+    &nbsp; &nbsp; - &nbsp;
+    <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+        <a th:href="@{'/welcome/' + ${i}}">[[${i}]]</a>
+        &nbsp; &nbsp;
+    </span>
+</footer>
 </body>
 </html>

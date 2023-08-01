@@ -6,6 +6,9 @@
 package pl.szczesnaj.customersapp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.szczesnaj.customersapp.model.CommunicationMethods;
 import pl.szczesnaj.customersapp.model.Customer;
@@ -17,17 +20,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerService {
 
+    public static final int PAGE_SIZE = 10;
     private final CustomerRepository customerRepository;
 
-    public List<Customer> getCustomers() {
-        return customerRepository.findAllCustomers();
+    public Page<Customer> getCustomers(int page, Sort.Direction sort) {
+        return customerRepository.findAllCustomers(
+                PageRequest.of(page, PAGE_SIZE,
+                        Sort.by(sort, "id")));
     }
 
+    public List<Customer> getCustomersToExport() {
+        return customerRepository.findAllCustomersToExport();
+    }
     public Customer addCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
 
-    // todo handle exception
+    //todo handle exception
     public Customer getCustomerByPeselNum(String peselNum) {
         return customerRepository.findCustomerByPeselNum(peselNum).orElseThrow();
     }
