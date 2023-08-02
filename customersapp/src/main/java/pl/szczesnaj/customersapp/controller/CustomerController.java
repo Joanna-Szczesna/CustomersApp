@@ -6,6 +6,7 @@
 package pl.szczesnaj.customersapp.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -44,7 +45,7 @@ class CustomerController {
     }
 
     @PostMapping(value = "/customers")
-    public ResponseEntity<Object> addCustomer(@RequestBody Customer user) {
+    public ResponseEntity<Object> addCustomer(@RequestBody @Valid Customer user) {
         Customer customer = customerService.addCustomer(user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -56,7 +57,7 @@ class CustomerController {
     }
 
     @PostMapping(value = "/customers/{peselNum}/methods")
-    public Customer addCustomerWithContacts(@PathVariable String peselNum, @RequestBody CommunicationMethods contact) {
+    public Customer addCustomerWithContacts(@PathVariable String peselNum, @RequestBody  @Valid CommunicationMethods contact) {
         return customerService.addContact(peselNum, contact);
     }
 
