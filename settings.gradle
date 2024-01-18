@@ -1,0 +1,4 @@
+rootProject.name = 'Customers'
+
+include 'customersapp'
+include 'generator'

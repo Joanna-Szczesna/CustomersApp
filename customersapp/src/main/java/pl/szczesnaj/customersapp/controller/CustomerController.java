@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,8 +56,10 @@ class CustomerController {
     }
 
     @PostMapping(value = "/customers/{peselNum}/methods")
-    public Customer addCustomerWithContacts(@PathVariable String peselNum, @RequestBody  @Valid CommunicationMethods contact) {
-        return customerService.addContact(peselNum, contact);
+    public ResponseEntity<Customer> addCustomerWithContacts(@PathVariable String peselNum,
+                                                          @RequestBody  @Valid CommunicationMethods contact) {
+         return ResponseEntity.of(customerService.addContact(peselNum, contact));
+
     }
 
     @GetMapping(value = "/customers/export")
@@ -70,7 +71,7 @@ class CustomerController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=customers_" + currentDateTime + ".csv";
         response.setHeader(headerKey, headerValue);
-        final List<Customer> customers = customerService.getCustomersToExport();
+        final List<Customer> customers = customerService.getCustomers();
 
         try (ICsvDozerBeanWriter beanWriter = new CsvDozerBeanWriter(response.getWriter(),
                 CsvPreference.STANDARD_PREFERENCE)) {

@@ -15,12 +15,13 @@ import pl.szczesnaj.customersapp.model.Customer;
 import pl.szczesnaj.customersapp.repository.CustomerRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
 
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 5;
     private final CustomerRepository customerRepository;
 
     public Page<Customer> getCustomers(int page, Sort.Direction sort) {
@@ -29,8 +30,8 @@ public class CustomerService {
                         Sort.by(sort, "id")));
     }
 
-    public List<Customer> getCustomersToExport() {
-        return customerRepository.findAllCustomersToExport();
+    public List<Customer> getCustomers() {
+        return customerRepository.findAllCustomers();
     }
     public Customer addCustomer(Customer customer) {
         return customerRepository.save(customer);
@@ -41,10 +42,12 @@ public class CustomerService {
         return customerRepository.findCustomerByPeselNum(peselNum).orElseThrow();
     }
 
-    public Customer addContact(String peselNumber, CommunicationMethods contact) {
-        Customer customer = customerRepository.findCustomerByPeselNum(peselNumber).orElseThrow();
-        customer.setContacts(contact);
-        return customerRepository.save(customer);
+    public Optional<Customer> addContact(String peselNumber, CommunicationMethods contact) {
+        Optional<Customer> customer = customerRepository.findCustomerByPeselNum(peselNumber);
+        return customer.map(c -> {
+            c.setContacts(contact);
+            return customerRepository.save(c);
+        });
     }
 }
 

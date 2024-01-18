@@ -20,11 +20,11 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("select distinct c from Customer c left join fetch c.contacts")
+    List<Customer> findAllCustomers();
+
+    @Query("select distinct c from Customer c left join fetch c.contacts")
     Page<Customer> findAllCustomers(Pageable page);
 
     @Query("select c from Customer c where peselNumber = :peselNumber")
     Optional<Customer> findCustomerByPeselNum(@Param("peselNumber") String peselNumber);
-
-    @Query("select distinct c from Customer c left join fetch c.contacts")
-    List<Customer> findAllCustomersToExport();
 }
