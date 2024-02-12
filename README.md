@@ -4,8 +4,9 @@ Customers application is CRUD application.
 
 Provides mechanisms:
 
+- display customers in web view
 - [generated customers*](#generate-users)
-- save customers to file
+- save customers to CSV file
 
 
 Web view with sample of generated data:
@@ -13,27 +14,13 @@ Web view with sample of generated data:
 
 ## Table of content
 
-1. [Used Technology](#used-technology-and-lib)
-2. [Schema database](#database-schema)
 1. [REST](#api-rest)
+2. [UI](#ui)
 1. [Ways to generate data](#generate-users)
 2. [Swagger](#swagger-ui)
+1. [Used Technology](#used-technology-and-lib)
+2. [Schema database](#database-schema)
 
-
-## Used Technology
-
-- Java 21
-- JUnit 5
-- Google truth 1.1
-- Gradle
-- Spring 
-- Hibernate
-- Thymeleaf
-- Swagger
-
-## Database schema
-
-<img src="/images/costumerDB_schema.png">
 
 ## API REST
 
@@ -46,6 +33,12 @@ Web view with sample of generated data:
 | GET | /customers/export    | save all users to file |
 | GET | http://localhost:8080/welcome   | Display all user on website|
 | GET | http://localhost:8080/welcome/{pageNumber}     |Display all user on website|
+
+## Ui
+
+base on Thymeleaf
+</br>
+http://localhost:8080/welcome
 
 <img src="/images/view-welcome.JPG">
 
@@ -92,6 +85,21 @@ http://localhost:8080/swagger-ui/index.html#/customer-controller/getCustomers
 
 <img src="/images/swagger_getCustomers_0.JPG">
 <img src="/images/swagger_getCustomers.JPG">
+
+## Used Technology
+
+- Java 21
+- JUnit 5
+- Google truth 1.1
+- Gradle
+- Spring
+- Hibernate
+- Thymeleaf
+- Swagger
+
+## Database schema
+
+<img src="/images/costumerDB_schema.png">
 
 ## TO DO
 polish chars
