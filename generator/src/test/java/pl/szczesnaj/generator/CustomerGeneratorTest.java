@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ class CustomerGeneratorTest {
 
     public static final String PESEL_NUM = "11111111111";
     public static final String MIESZKO = "Mieszko";
-    public static final String PIERWSZY = "Pierwszy";
     private CustomerGenerator generator;
 
     @BeforeEach
@@ -36,22 +34,6 @@ class CustomerGeneratorTest {
 
     @Nested
     class PayloadStructure {
-//        @Test
-//        void customer() {
-//            Map<String, String> person = new HashMap<>();
-//            person.put("peselNumber", PESEL_NUM);
-//            person.put("name", MIESZKO);
-//            person.put("surname", PIERWSZY);
-//            String returnStatement = generator.makePayload(person);
-//
-//            assertThat(returnStatement).contains("""
-//                    {***
-//                    "peselNumber": "11111111111",
-//                    "name": "Mieszko",
-//                    "surname": "Pierwszy"
-//                    }***
-//                    """);
-//        }
 
         @Test
         void customer1() {

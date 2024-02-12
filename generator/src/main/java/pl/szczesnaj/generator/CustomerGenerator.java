@@ -42,8 +42,7 @@ public class CustomerGenerator {
 
     }
     public void generate(int customersNumber) {
-        getSampleNamesAndSurnamesFromFiles();
-
+        loadSampleNamesAndSurnamesFromFiles();
 
         for (int i = 0; i < customersNumber; i++) {
             String peselNum = generatePeselNumber(i);
@@ -109,7 +108,7 @@ public class CustomerGenerator {
     }
 
 
-    void getSampleNamesAndSurnamesFromFiles(){
+    void loadSampleNamesAndSurnamesFromFiles(){
         try {
             this.names.put(Gender.FEMALE, getDataFromFile("names_woman.csv", NameCSV.class));
             this.names.put(Gender.MALE, getDataFromFile("names_man.csv", NameCSV.class));

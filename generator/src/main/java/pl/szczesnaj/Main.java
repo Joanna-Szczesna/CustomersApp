@@ -4,23 +4,23 @@ import pl.szczesnaj.generator.CustomerGenerator;
 
 public class Main {
 
-    public static final int DEFAULT_NUMBER = 10;
+    public static final int DEFAULT_CUSTOMERS_AMOUNT = 100;
 
     public static void main(String[] args) {
-        int customerNumber = getCustomerNumber(args);
+        int customerAmount = getCustomerAmount(args);
         CustomerGenerator generator = new CustomerGenerator();
-        generator.generate(customerNumber);
+        generator.generate(customerAmount);
     }
 
-    private static int getCustomerNumber(String[] args) {
+    private static int getCustomerAmount(String[] args) {
         try {
             if (args.length > 0) {
                 return Integer.parseInt(args[0]);
             }
-            return DEFAULT_NUMBER;
+            return DEFAULT_CUSTOMERS_AMOUNT;
         } catch (NumberFormatException exc) {
-            System.out.println("no customers number");
-            return DEFAULT_NUMBER;
+            System.out.println("not provide customers amount");
+            return DEFAULT_CUSTOMERS_AMOUNT;
         }
     }
 }
