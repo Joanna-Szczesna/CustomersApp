@@ -14,9 +14,11 @@ Web view with sample of generated data:
 ## Table of content
 
 1. [Used Technology](#used-technology-and-lib)
+2. [Schema database](#database-schema)
 1. [REST](#api-rest)
 1. [Ways to generate data](#generate-users)
-1. [Schema database](#database-schema)
+2. [Swagger](#swagger-ui)
+
 
 ## Used Technology
 
@@ -29,6 +31,9 @@ Web view with sample of generated data:
 - Thymeleaf
 - Swagger
 
+## Database schema
+
+<img src="/images/costumerDB_schema.png">
 
 ## API REST
 
@@ -76,12 +81,17 @@ H2 view:
 <img src="/images/h2_console.JPG">
 <img src="/images/h2_console_methods.JPG">
 
-## Database schema
-
-<img src="/images/costumerDB_schema.png">
+http://localhost:8080/swagger-ui/index.html
 
 
-## TODO:
+## Swagger UI
+
+http://localhost:8080/swagger-ui/index.html
+
+http://localhost:8080/swagger-ui/index.html#/customer-controller/getCustomers
+
+<img src="/images/swagger_getCustomers_0.JPG">
+<img src="/images/swagger_getCustomers.JPG">
+
+## TO DO
 polish chars
-
-
