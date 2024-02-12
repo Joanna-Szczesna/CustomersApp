@@ -41,6 +41,29 @@ public class CustomerGenerator {
         this.surnames = new HashMap<>();
 
     }
+    public void generate(int customersNumber) {
+        getSampleNamesAndSurnamesFromFiles();
+
+
+        for (int i = 0; i < customersNumber; i++) {
+            String peselNum = generatePeselNumber(i);
+            Gender gender = getGenderFromPeselNumber(peselNum);
+            final Map<String, String> person = Map.of(
+                    "peselNumber", peselNum,
+                    "name", generateName(gender),
+                    "surname", generateSurname(gender));
+
+            String customerPayload = makePayload(person);
+
+            String location = addCustomer(customerPayload);
+            System.out.printf("Added customer: %s%n", location);
+
+            int quantity = getRandomNumber(2, 5);
+            String contactPayload = addContacts(quantity);
+            int statusCode = addContactsMethods(location, contactPayload);
+            System.out.printf("Added methods. Status Code: %s%n", statusCode);
+        }
+    }
 
     List<String> getDataFromFile(String fileName, Class<?> type) {
         CsvMapper mapper = new CsvMapper();
@@ -85,27 +108,21 @@ public class CustomerGenerator {
         return attributes.stream().map(CSV::getAttribute).collect(Collectors.toList());
     }
 
-    public void generate(int customersNumber) {
-        for (int i = 0; i < customersNumber; i++) {
-            String peselNum = generatePeselNumber(i);
-            Gender gender = getGenderFromPeselNumber(peselNum);
-            final Map<String, String> person = Map.of(
-                    "peselNumber", peselNum,
-                    "name", generateName(gender),
-                    "surname", generateSurname(gender));
 
-            String customerPayload = makePayload(person);
+    void getSampleNamesAndSurnamesFromFiles(){
+        try {
+            this.names.put(Gender.FEMALE, getDataFromFile("names_woman.csv", NameCSV.class));
+            this.names.put(Gender.MALE, getDataFromFile("names_man.csv", NameCSV.class));
+            this.surnames.put(Gender.FEMALE, getDataFromFile("surnames_woman.csv", SurnameCSV.class));
+            this.surnames.put(Gender.MALE, getDataFromFile("surnames_man.csv", SurnameCSV.class));
 
-            String location = addCustomer(customerPayload);
-            System.out.printf("Added customer: %s%n", location);
-
-            int quantity = getRandomNumber(2, 5);
-            String contactPayload = addContacts(quantity);
-            int statusCode = addContactsMethods(location, contactPayload);
-            System.out.printf("Added methods. Status Code: %s%n", statusCode);
+        } catch (Exception e) {
+            this.names.put(Gender.FEMALE, List.of("Tola", "Ola", "Lola"));
+            this.names.put(Gender.MALE, List.of("Mieszko", "Boleslaw", "Kazimierz"));
+            this.surnames.put(Gender.FEMALE, List.of("Kowalska", "Nowakowska", "Rada"));
+            this.surnames.put(Gender.MALE, List.of("Kowalski", "Nowakowski", "Rad"));
         }
     }
-
     Gender getGenderFromPeselNumber(String peselNumber) {
         int orderNumber = Integer.parseInt(peselNumber.substring(9, 10));
         return orderNumber % 2 == 0 ? Gender.FEMALE : Gender.MALE;
