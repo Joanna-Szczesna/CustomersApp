@@ -8,10 +8,6 @@ Provides mechanisms:
 - [generated customers*](#generate-users)
 - save customers to CSV file
 
-
-Web view with sample of generated data:
-<img src="/images/view-welcome.JPG">
-
 ## Table of content
 
 1. [REST](#api-rest)
@@ -24,21 +20,24 @@ Web view with sample of generated data:
 
 ## API REST
 
-| Method    | Endpoint |   Description  |
-|-----------|----------|-------------|
-| POST    | /customers    | add single user (name, surname, pesel) |
-| POST | /customers/{peselNum}/methods     | add communication method to user |
-| GET | /customers    | get all users |
-| GET | /customers/{peselNum}    | get user by pesel |
-| GET | /customers/export    | save all users to file |
-| GET | http://localhost:8080/welcome   | Display all user on website|
-| GET | http://localhost:8080/welcome/{pageNumber}     |Display all user on website|
+| Method | Endpoint | Description                                |
+|--------|----------|--------------------------------------------|
+| POST   | /customers    | add single user (name, surname, pesel)     |
+| POST   | /customers/{peselNum}/methods     | add communication methods to user          |
+| GET    | /customers    | get all users                              |
+| GET    | /customers/{peselNum}    | get user by pesel                          |
+| GET    | /customers/export    | save all users to file                     |
+| PUT    | /customers    | edit customer                              |
+| DELETE | /customers     | delete customer with communication methods |
+| GET    | http://localhost:8080/welcome   | Display all user on website                |
+| GET    | http://localhost:8080/welcome/{pageNumber}     | Display all user on website                |
 
-## Ui
+## UI
 
-base on Thymeleaf
-</br>
 http://localhost:8080/welcome
+
+Web view - base on Thymeleaf template - with sample of generated data:
+</br>
 
 <img src="/images/view-welcome.JPG">
 
@@ -55,7 +54,7 @@ generated 10 users
 https://github.com/Joanna-Szczesna/CustomersApp/tree/main/generator
 
 * base on most popular names and surnames in Poland;
-* default generates 10 people
+* default generates 100 people
 
 Output - links + statuses adds method:
 </br>
@@ -66,7 +65,7 @@ Output - links + statuses adds method:
 1. run Customerapp
 2. run generator project with string args 
 * first int number will be number of generated people
-* without args program generated 10 people by default
+* without args program generated 100 people by default
 3. program use post method to add people with contact method
 
 
@@ -81,7 +80,7 @@ http://localhost:8080/swagger-ui/index.html
 
 http://localhost:8080/swagger-ui/index.html
 
-http://localhost:8080/swagger-ui/index.html#/customer-controller/getCustomers
+http://localhost:8080/swagger-ui/index.html#/customer-controller
 
 <img src="/images/swagger_getCustomers_0.JPG">
 <img src="/images/swagger_getCustomers.JPG">

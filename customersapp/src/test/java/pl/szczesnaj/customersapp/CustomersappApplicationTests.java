@@ -10,19 +10,13 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-
 
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CustomersappApplicationTests {
-
-    @Autowired
-//    private CustomerServiceTest testDb;
 
     private static final String VALID_PESEL = "11111111111";
     public static final String IZABELA = "Izabela";
@@ -37,8 +31,6 @@ class CustomersappApplicationTests {
         RestAssured.port = port;
 
         baseUri = "%s:%d".formatted(RestAssured.baseURI, port);
-
-//        testDb.cleanup();
     }
 
     @Nested

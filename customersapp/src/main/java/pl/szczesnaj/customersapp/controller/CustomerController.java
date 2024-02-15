@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Joanna Szczesna
+ * Copyright (c) 2024 Joanna Szczesna
  * All rights reserved
  */
 
@@ -28,22 +28,17 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@RequestMapping("/customers")
 @RequiredArgsConstructor
 class CustomerController {
     private final CustomerService customerService;
 
-    @GetMapping(value = "/customers")
-    public Page<Customer> getCustomers(@RequestParam(required = false) Integer page, Sort.Direction sort) {
-        int pageNumber = page != null && page >= 0 ? page : 0;
-        return customerService.getCustomers(pageNumber, sort);
-    }
-
-    @GetMapping(value = "/customers/{peselNum}")
+    @GetMapping(value = "/{peselNum}")
     public Customer getCustomerByPeselNum(@PathVariable String peselNum) {
         return customerService.getCustomerByPeselNum(peselNum);
     }
 
-    @PostMapping(value = "/customers")
+    @PostMapping
     public ResponseEntity<Object> addCustomer(@RequestBody @Valid Customer user) {
         Customer customer = customerService.addCustomer(user);
         URI location = ServletUriComponentsBuilder
@@ -55,14 +50,31 @@ class CustomerController {
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping(value = "/customers/{peselNum}/methods")
-    public ResponseEntity<Customer> addCustomerWithContacts(@PathVariable String peselNum,
-                                                          @RequestBody  @Valid CommunicationMethods contact) {
-         return ResponseEntity.of(customerService.addContact(peselNum, contact));
-
+    @PostMapping(value = "/{peselNum}/methods")
+    public ResponseEntity<Customer> addContactToCustomer(@PathVariable String peselNum,
+                                                         @RequestBody @Valid CommunicationMethods contact) {
+        return ResponseEntity.of(customerService.addContact(peselNum, contact));
     }
 
-    @GetMapping(value = "/customers/export")
+    @DeleteMapping(value = "/{peselNum}")
+    public void deleteCustomer(@PathVariable String peselNum) {
+        customerService.deleteCustomer(peselNum);
+    }
+
+
+    @PutMapping
+    public Customer editCustomer(@RequestBody @Valid Customer customerRequest) {
+
+        return customerService.editCustomer(customerRequest);
+    }
+
+    @GetMapping
+    public Page<Customer> getListCustomers(@RequestParam(required = false) Integer page, Sort.Direction sort) {
+        int pageNumber = page != null && page >= 0 ? page : 0;
+        return customerService.getCustomers(pageNumber, sort);
+    }
+
+    @GetMapping(value = "/export")
     public void exportToCSV(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
