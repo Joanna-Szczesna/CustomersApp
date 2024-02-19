@@ -10,7 +10,7 @@ Provides mechanisms:
 
 ## Table of content
 
-1. [REST](#api-rest)
+1. [REST](#rest-api)
 2. [UI](#ui)
 1. [Ways to generate data](#generate-users)
 2. [Swagger](#swagger-ui)
@@ -18,25 +18,26 @@ Provides mechanisms:
 2. [Schema database](#database-schema)
 
 
-## API REST
+## REST API
 
-| Method | Endpoint | Description                                |
-|--------|----------|--------------------------------------------|
-| POST   | /customers    | add single user (name, surname, pesel)     |
-| POST   | /customers/{peselNum}/methods     | add communication methods to user          |
-| GET    | /customers    | get all users                              |
-| GET    | /customers/{peselNum}    | get user by pesel                          |
-| GET    | /customers/export    | save all users to file                     |
-| PUT    | /customers    | edit customer                              |
-| DELETE | /customers     | delete customer with communication methods |
-| GET    | http://localhost:8080/welcome   | Display all user on website                |
-| GET    | http://localhost:8080/welcome/{pageNumber}     | Display all user on website                |
+| Method | Endpoint                      | Description                                |
+|--------|-------------------------------|--------------------------------------------|
+| POST   | /customers                    | add single user (name, surname, pesel)     |
+| POST   | /customers/{peselNum}/methods | add communication methods to user          |
+| GET    | /customers                    | get all users                              |
+| GET    | /customers/{peselNum}         | get user by pesel                          |
+| GET    | /customers/export             | save all users to CSV file                 |
+| PUT    | /customers                    | edit customer                              |
+| DELETE | /customers/{peselNum}         | delete customer with communication methods |
 
 ## UI
 
-http://localhost:8080/welcome
+| Adress                                     | Description                              |
+|--------------------------------------------|------------------------------------------|
+| http://localhost:8080/welcome              | View all user on website from first page |
+| http://localhost:8080/welcome/{pageNumber} | View all users from the selected page    |
 
-Web view - base on Thymeleaf template - with sample of generated data:
+Web view - based on Thymeleaf template - with sample of generated data:
 </br>
 
 <img src="/images/view-welcome.JPG">
