@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Joanna Szczesna
+ * Copyright (c) 2024 Joanna Szczesna
  * All rights reserved
  */
 
@@ -39,8 +39,8 @@ public class CustomerGenerator {
         this.httpClient = HttpClient.newHttpClient();
         this.names = new HashMap<>();
         this.surnames = new HashMap<>();
-
     }
+
     public void generate(int customersNumber) {
         loadSampleNamesAndSurnamesFromFiles();
 
@@ -107,21 +107,13 @@ public class CustomerGenerator {
         return attributes.stream().map(CSV::getAttribute).collect(Collectors.toList());
     }
 
-
-    void loadSampleNamesAndSurnamesFromFiles(){
-        try {
-            this.names.put(Gender.FEMALE, getDataFromFile("names_woman.csv", NameCSV.class));
-            this.names.put(Gender.MALE, getDataFromFile("names_man.csv", NameCSV.class));
-            this.surnames.put(Gender.FEMALE, getDataFromFile("surnames_woman.csv", SurnameCSV.class));
-            this.surnames.put(Gender.MALE, getDataFromFile("surnames_man.csv", SurnameCSV.class));
-
-        } catch (Exception e) {
-            this.names.put(Gender.FEMALE, List.of("Tola", "Ola", "Lola"));
-            this.names.put(Gender.MALE, List.of("Mieszko", "Boleslaw", "Kazimierz"));
-            this.surnames.put(Gender.FEMALE, List.of("Kowalska", "Nowakowska", "Rada"));
-            this.surnames.put(Gender.MALE, List.of("Kowalski", "Nowakowski", "Rad"));
-        }
+    void loadSampleNamesAndSurnamesFromFiles() {
+        this.names.put(Gender.FEMALE, getDataFromFile("female_names.csv", NameCSV.class));
+        this.names.put(Gender.MALE, getDataFromFile("male_names.csv", NameCSV.class));
+        this.surnames.put(Gender.FEMALE, getDataFromFile("female_surnames.csv", SurnameCSV.class));
+        this.surnames.put(Gender.MALE, getDataFromFile("male_surnames.csv", SurnameCSV.class));
     }
+
     Gender getGenderFromPeselNumber(String peselNumber) {
         int orderNumber = Integer.parseInt(peselNumber.substring(9, 10));
         return orderNumber % 2 == 0 ? Gender.FEMALE : Gender.MALE;

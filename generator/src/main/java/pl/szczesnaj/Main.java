@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024 Joanna Szczesna
+ * All rights reserved
+ */
+
 package pl.szczesnaj;
 
 import pl.szczesnaj.generator.CustomerGenerator;

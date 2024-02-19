@@ -27,6 +27,22 @@ class CustomerGeneratorTest {
     public static final String MIESZKO = "Mieszko";
     private CustomerGenerator generator;
 
+//    {
+//      "id": 1,
+//      "peselNumber": "17052000000",
+//      "name": "TestName",
+//      "surname": "TestSurname",
+//      "contacts": {
+//        "id": 1,
+//        "emailAddress": "testtestowy69252@example.com",
+//        "residenceAddress": "test residenceAddress",
+//        "registeredAddress": null,
+//        "privatePhoneNumber": "87111558502",
+//        "businessPhoneNumber": null
+//      }
+//    }
+
+
     @BeforeEach
     void setUp() {
         generator = new CustomerGenerator();
