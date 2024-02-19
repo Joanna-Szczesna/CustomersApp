@@ -5,7 +5,6 @@
 
 package pl.szczesnaj.customersapp.service;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,12 +37,15 @@ public class CustomerService {
         return customerRepository.findAllCustomers();
     }
 
-    public Customer addCustomer(Customer customer) {
-        return customerRepository.save(customer);
+    public Optional<Customer> addCustomer(Customer customer) {
+        Optional<Customer> existedCustomer = getCustomerByPeselNum(customer.getPeselNumber());
+        if(existedCustomer.isPresent()){
+            return Optional.empty();
+        }
+        return Optional.of(customerRepository.save(customer));
     }
 
-    //todo handle exception Optional<Customer> ; in controller decision what doing with optional np empty optional map to status 404
-    public Customer getCustomerByPeselNum(String peselNum) {
+    public Optional<Customer> getCustomerByPeselNum(String peselNum) {
         return findByPeselNum(peselNum);
     }
 
@@ -58,22 +60,24 @@ public class CustomerService {
 
     @Transactional
     public void deleteCustomer(String peselNum) {
-        Customer customerToDelete = findByPeselNum(peselNum);
-        customerRepository.delete(customerToDelete);
+        Optional<Customer> customerToDelete = findByPeselNum(peselNum);
+        customerToDelete.ifPresent(customerRepository::delete);
     }
 
-
-    private Customer findByPeselNum(String peselNum) {
-        return customerRepository.findCustomerByPeselNum(peselNum).orElseThrow();
+    private Optional<Customer> findByPeselNum(String peselNum) {
+        return customerRepository.findCustomerByPeselNum(peselNum);
     }
 
     @Transactional
-    public Customer editCustomer(Customer customerRequest) {
-        Customer customerEdited = customerRepository.findCustomerByPeselNum(customerRequest.getPeselNumber()).orElseThrow();
+    public Optional<Customer> editCustomer(Customer customerRequest) {
+        Optional<Customer> customer = customerRepository.findCustomerByPeselNum(customerRequest.getPeselNumber());
+       if(customer.isEmpty()){
+            return Optional.empty();
+        }
+        Customer customerEdited = customer.get();
         customerEdited.setName(customerRequest.getName());
         customerEdited.setSurname(customerRequest.getSurname());
         customerEdited.setPeselNumber(customerRequest.getPeselNumber());
-        return customerEdited;
+        return Optional.of(customerEdited);
     }
 }
-

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,6 +27,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/customers")
@@ -34,20 +36,25 @@ class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping(value = "/{peselNum}")
-    public Customer getCustomerByPeselNum(@PathVariable String peselNum) {
-        return customerService.getCustomerByPeselNum(peselNum);
+    public ResponseEntity<Customer> getCustomerByPeselNum(@PathVariable String peselNum) {
+        Optional<Customer> customer = customerService.getCustomerByPeselNum(peselNum);
+        return customer.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<Object> addCustomer(@RequestBody @Valid Customer user) {
-        Customer customer = customerService.addCustomer(user);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{peselNum}")
-                .buildAndExpand(customer.getPeselNumber())
-                .toUri();
+    public ResponseEntity<Customer> addCustomer(@RequestBody @Valid Customer user) {
+        Optional<Customer> customer = customerService.addCustomer(user);
+        if(customer.isPresent()) {
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{peselNum}")
+                    .buildAndExpand(customer.get().getPeselNumber())
+                    .toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        }
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @PostMapping(value = "/{peselNum}/methods")
@@ -57,25 +64,27 @@ class CustomerController {
     }
 
     @DeleteMapping(value = "/{peselNum}")
-    public void deleteCustomer(@PathVariable String peselNum) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable String peselNum) {
         customerService.deleteCustomer(peselNum);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
     @PutMapping
-    public Customer editCustomer(@RequestBody @Valid Customer customerRequest) {
-
-        return customerService.editCustomer(customerRequest);
+    public ResponseEntity<Customer> editCustomer(@RequestBody @Valid Customer customerRequest) {
+        Optional<Customer> customer = customerService.editCustomer(customerRequest);
+        return customer.map(c ->  new ResponseEntity<>(c, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping
-    public Page<Customer> getListCustomers(@RequestParam(required = false) Integer page, Sort.Direction sort) {
+    public ResponseEntity<Page<Customer>> getAllCustomers(@RequestParam(required = false) Integer page, Sort.Direction sort) {
         int pageNumber = page != null && page >= 0 ? page : 0;
-        return customerService.getCustomers(pageNumber, sort);
+        Page<Customer> customers = customerService.getCustomers(pageNumber, sort);
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @GetMapping(value = "/export")
-    public void exportToCSV(HttpServletResponse response) throws IOException {
+    public ResponseEntity<Void> exportToCSV(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -101,5 +110,6 @@ class CustomerController {
                 beanWriter.write(c);
             }
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
