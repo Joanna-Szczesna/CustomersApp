@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,14 +46,16 @@ class CustomerController {
     @PostMapping
     public ResponseEntity<Customer> addCustomer(@RequestBody @Valid Customer user) {
         Optional<Customer> customer = customerService.addCustomer(user);
-        if(customer.isPresent()) {
+        if (customer.isPresent()) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{peselNum}")
                     .buildAndExpand(customer.get().getPeselNumber())
                     .toUri();
 
-            return ResponseEntity.created(location).build();
+            return ResponseEntity
+                    .created(location)
+                    .body(customer.get());
         }
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
@@ -65,26 +68,32 @@ class CustomerController {
 
     @DeleteMapping(value = "/{peselNum}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable String peselNum) {
-        customerService.deleteCustomer(peselNum);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        boolean isSuccess = customerService.deleteCustomer(peselNum);
+        if(isSuccess) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping
+    @PutMapping(value = "/{peselNum}")
     public ResponseEntity<Customer> editCustomer(@RequestBody @Valid Customer customerRequest) {
         Optional<Customer> customer = customerService.editCustomer(customerRequest);
-        return customer.map(c ->  new ResponseEntity<>(c, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return customer.map(c -> new ResponseEntity<>(c, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping
     public ResponseEntity<Page<Customer>> getAllCustomers(@RequestParam(required = false) Integer page, Sort.Direction sort) {
         int pageNumber = page != null && page >= 0 ? page : 0;
         Page<Customer> customers = customerService.getCustomers(pageNumber, sort);
+        if(customers.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @GetMapping(value = "/export")
-    public ResponseEntity<Void> exportToCSV(HttpServletResponse response) throws IOException {
+    public void exportToCSV(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -110,6 +119,5 @@ class CustomerController {
                 beanWriter.write(c);
             }
         }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

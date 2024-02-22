@@ -39,7 +39,7 @@ public class CustomerService {
 
     public Optional<Customer> addCustomer(Customer customer) {
         Optional<Customer> existedCustomer = getCustomerByPeselNum(customer.getPeselNumber());
-        if(existedCustomer.isPresent()){
+        if (existedCustomer.isPresent()) {
             return Optional.empty();
         }
         return Optional.of(customerRepository.save(customer));
@@ -59,9 +59,14 @@ public class CustomerService {
     }
 
     @Transactional
-    public void deleteCustomer(String peselNum) {
+    public boolean deleteCustomer(String peselNum) {
         Optional<Customer> customerToDelete = findByPeselNum(peselNum);
         customerToDelete.ifPresent(customerRepository::delete);
+        if(customerToDelete.isPresent()){
+            return true;
+        }
+
+        return false;
     }
 
     private Optional<Customer> findByPeselNum(String peselNum) {
@@ -71,7 +76,7 @@ public class CustomerService {
     @Transactional
     public Optional<Customer> editCustomer(Customer customerRequest) {
         Optional<Customer> customer = customerRepository.findCustomerByPeselNum(customerRequest.getPeselNumber());
-       if(customer.isEmpty()){
+        if (customer.isEmpty()) {
             return Optional.empty();
         }
         Customer customerEdited = customer.get();

@@ -27,7 +27,7 @@ Provides mechanisms:
 | GET    | /customers                    | get all users                              |
 | GET    | /customers/{peselNum}         | get user by pesel                          |
 | GET    | /customers/export             | save all users to CSV file                 |
-| PUT    | /customers                    | edit customer                              |
+| PUT    | /customers/{peselNum}         | edit customer                              |
 | DELETE | /customers/{peselNum}         | delete customer with communication methods |
 
 ## UI
@@ -74,8 +74,7 @@ H2 view:
 <img src="/images/h2_console.JPG">
 <img src="/images/h2_console_methods.JPG">
 
-http://localhost:8080/swagger-ui/index.html
-
+http://localhost:8080/h2-console
 
 ## Swagger UI
 

@@ -30,10 +30,10 @@ public class CommunicationMethods {
     private String registeredAddress;
 
     @Size(min = 9, max = 11, message = "Private phone number")
-    @Pattern(regexp="[\\d]{9,11}", message = "Private phone number should contain only digits")
+    @Pattern(regexp = "[\\d]{9,11}", message = "Private phone number should contain only digits")
     private String privatePhoneNumber;
 
     @Size(min = 0, max = 11, message = "Business phone number")
-    @Pattern(regexp="[\\d]{9,11}", message = "Business phone number should contain only digits")
+    @Pattern(regexp = "[\\d]{9,11}", message = "Business phone number should contain only digits")
     private String businessPhoneNumber;
 }
