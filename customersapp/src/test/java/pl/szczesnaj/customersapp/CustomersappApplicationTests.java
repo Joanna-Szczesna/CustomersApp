@@ -15,8 +15,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -24,17 +23,17 @@ class CustomersappApplicationTests {
 
     private static String baseUri;
 
-    private static final String MIESZKO = "Mieszko";
-    private static final String IZABELA = "Izabela";
-    private static final String PIERWSZY = "Pierwszy";
-    private static final String CZAJKOWSKA = "Czajkowska";
+    private static final String NAME_1 = "Izabela";
+    private static final String NAME_2 = "Mieszko";
+    private static final String SURNAME_1 = "Czajkowska";
+    private static final String SURNAME_2 = "Pierwszy";
     private static final String VALID_PESEL = "11111111111";
 
     private static final String CUSTOMERS_ENDPOINT_PATH = "/customers";
     private static final String CUSTOMERS_VALID_PESEL_ENDPOINT_PATH = "/customers/11111111111";
     private static final String CUSTOMERS_INVALID_PESEL_ENDPOINT_PATH = "/customers/21111111111";
-    private static final String CUSTOMER_REQUEST_BODY_IZABELA_CZAJKOWSKA =
-            getCustomerRequestBody(VALID_PESEL, IZABELA, CZAJKOWSKA);
+    private static final String CUSTOMER_1_REQUEST_BODY =
+            makeCustomerRequestBody(VALID_PESEL, NAME_1, SURNAME_1);
 
     @BeforeAll
     static void setUp(@LocalServerPort int port) {
@@ -44,7 +43,7 @@ class CustomersappApplicationTests {
         baseUri = "%s:%d".formatted(RestAssured.baseURI, port);
     }
 
-    private static String getCustomerRequestBody(String pesel, String name, String surname) {
+    private static String makeCustomerRequestBody(String pesel, String name, String surname) {
         return """
                 {
                     "peselNumber": "%s",
@@ -54,13 +53,13 @@ class CustomersappApplicationTests {
     }
 
     @Nested
-    class AddCustomer_POST {
+    class AddCustomer {
 
         @Test
-        void successfulOperation_returnCustomer_customerLocation_CreatedStatus_201() {
+        void successfulOperation() {
             String locationExpected = baseUri + CUSTOMERS_ENDPOINT_PATH + "/" + VALID_PESEL;
 
-            given().body(CUSTOMER_REQUEST_BODY_IZABELA_CZAJKOWSKA)
+            given().body(CUSTOMER_1_REQUEST_BODY)
                     .contentType(ContentType.JSON)
                     .when()
                     .post(CUSTOMERS_ENDPOINT_PATH)
@@ -68,16 +67,27 @@ class CustomersappApplicationTests {
                     .assertThat().statusCode(201)
                     .and().header("location", is(locationExpected))
                     .and().body("peselNumber", is(VALID_PESEL),
-                            "name", is(IZABELA),
-                            "surname", is(CZAJKOWSKA));
+                            "name", is(NAME_1),
+                            "surname", is(SURNAME_1));
+        }
+        @Test
+        void invalidPeselNumber() {
+            String toShortPeselNumber = "55555";
+            String wrong_request_body = makeCustomerRequestBody(toShortPeselNumber, NAME_2, SURNAME_2);
+            given().body(wrong_request_body)
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .post(CUSTOMERS_ENDPOINT_PATH)
+                    .then()
+                    .assertThat().statusCode(400);
         }
 
         @Test
-        void secondUsersWithSamePESELNumber_returnConflict_409() {
+        void cannotBeTwoCustomersWithSamePESELNumber() {
 
-            String customerDataSamePesel = getCustomerRequestBody(VALID_PESEL, MIESZKO, PIERWSZY);
+            String customerDataSamePesel = makeCustomerRequestBody(VALID_PESEL, NAME_2, SURNAME_2);
 
-            given().body(CUSTOMER_REQUEST_BODY_IZABELA_CZAJKOWSKA)
+            given().body(CUSTOMER_1_REQUEST_BODY)
                     .contentType(ContentType.JSON)
                     .when().post(CUSTOMERS_ENDPOINT_PATH);
 
@@ -91,12 +101,12 @@ class CustomersappApplicationTests {
     }
 
     @Nested
-    class GetCustomer_GET {
+    class GetCustomer {
 
         @Test
-        void existedCustomer_returnCustomer_statusCodeOK_200() {
+        void existedCustomer() {
 
-            given().body(CUSTOMER_REQUEST_BODY_IZABELA_CZAJKOWSKA)
+            given().body(CUSTOMER_1_REQUEST_BODY)
                     .contentType(ContentType.JSON)
                     .when().post(CUSTOMERS_ENDPOINT_PATH);
 
@@ -107,12 +117,12 @@ class CustomersappApplicationTests {
                     .then()
                     .assertThat().statusCode(200)
                     .and().body("peselNumber", is(VALID_PESEL),
-                            "name", is(IZABELA),
-                            "surname", is(CZAJKOWSKA));
+                            "name", is(NAME_1),
+                            "surname", is(SURNAME_1));
         }
 
         @Test
-        void nonExistedCustomer_returnStatusNotFound_404() {
+        void nonexistentCustomer() {
 
             given()
                     .contentType(ContentType.JSON)
@@ -124,25 +134,25 @@ class CustomersappApplicationTests {
     }
 
     @Nested
-    class EditCustomer_PUT {
+    class EditCustomer {
         @Test
-        void nonExistedCustomer_returnStatusNotFound_404() {
+        void cannotEditedNonexistentCustomer() {
 
             given().contentType(ContentType.JSON)
                     .when()
-                    .body(CUSTOMER_REQUEST_BODY_IZABELA_CZAJKOWSKA)
+                    .body(CUSTOMER_1_REQUEST_BODY)
                     .put(CUSTOMERS_VALID_PESEL_ENDPOINT_PATH)
                     .then()
                     .assertThat().statusCode(404);
         }
 
         @Test
-        void existedCustomer_returnUpdatedCustomer_StatusOK_200() {
-            String updated_customer_data = getCustomerRequestBody(VALID_PESEL, MIESZKO, PIERWSZY);
+        void successfulEditOperation() {
+            String updated_customer_data = makeCustomerRequestBody(VALID_PESEL, NAME_2, SURNAME_2);
 
             given().contentType(ContentType.JSON)
                     .when()
-                    .body(CUSTOMER_REQUEST_BODY_IZABELA_CZAJKOWSKA)
+                    .body(CUSTOMER_1_REQUEST_BODY)
                     .post(CUSTOMERS_ENDPOINT_PATH);
 
             given()
@@ -153,15 +163,32 @@ class CustomersappApplicationTests {
                     .then().assertThat().statusCode(200)
                     .and().body(
                             "peselNumber", is(VALID_PESEL),
-                            "name", is(MIESZKO),
-                            "surname", is(PIERWSZY));
+                            "name", is(NAME_2),
+                            "surname", is(SURNAME_2));
+        }
+
+        @Test
+        void modifyingPeselNumberIsNotAllowed() {
+            String updated_customer_data = makeCustomerRequestBody("22222222222", NAME_2, SURNAME_2);
+
+            given().contentType(ContentType.JSON)
+                    .when()
+                    .body(CUSTOMER_1_REQUEST_BODY)
+                    .post(CUSTOMERS_ENDPOINT_PATH);
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .body(updated_customer_data)
+                    .put(CUSTOMERS_VALID_PESEL_ENDPOINT_PATH)
+                    .then().assertThat().statusCode(403);
         }
     }
 
     @Nested
-    class DeleteCustomer_DELETE {
+    class DeleteCustomer {
         @Test
-        void nonExistedCustomer_returnStatusBadRequest_400() {
+        void nonexistentCustomer() {
             given()
                     .contentType(ContentType.JSON)
                     .when()
@@ -171,9 +198,9 @@ class CustomersappApplicationTests {
         }
 
         @Test
-        void existedCustomer_returnStatusNoContent_204() {
+        void existedCustomer() {
 
-            given().body(CUSTOMER_REQUEST_BODY_IZABELA_CZAJKOWSKA)
+            given().body(CUSTOMER_1_REQUEST_BODY)
                     .contentType(ContentType.JSON)
                     .when()
                     .post(CUSTOMERS_ENDPOINT_PATH);
@@ -187,10 +214,10 @@ class CustomersappApplicationTests {
     }
 
     @Nested
-    class GetAllCustomers_GET {
+    class GetAllCustomers {
 
         @Test
-        void nonExistedCustomers_return_statusNoContent_204() {
+        void nonexistentCustomers() {
 
             given().contentType(ContentType.JSON)
                     .when()
@@ -200,24 +227,15 @@ class CustomersappApplicationTests {
         }
 
         @Test
-        void threeExistedCustomers_returnStatusOK_200() {
-            String nameBob = "Bob";
-            String surnameSnail = "Snail";
+        void twoExistedCustomers() {
             String secondPesel = "22222222222";
-            String thirdPesel = "33333333333";
+            String secondCustomerData = makeCustomerRequestBody(secondPesel, NAME_2, SURNAME_2);
 
-            String secondCustomerData = getCustomerRequestBody(secondPesel, MIESZKO, PIERWSZY);
-            String thirdCustomerData = getCustomerRequestBody(thirdPesel, nameBob, surnameSnail);
-
-            given().body(CUSTOMER_REQUEST_BODY_IZABELA_CZAJKOWSKA)
+            given().body(CUSTOMER_1_REQUEST_BODY)
                     .contentType(ContentType.JSON)
                     .when()
                     .post(CUSTOMERS_ENDPOINT_PATH);
             given().body(secondCustomerData)
-                    .contentType(ContentType.JSON)
-                    .when()
-                    .post(CUSTOMERS_ENDPOINT_PATH);
-            given().body(thirdCustomerData)
                     .contentType(ContentType.JSON)
                     .when()
                     .post(CUSTOMERS_ENDPOINT_PATH);
@@ -240,9 +258,18 @@ class CustomersappApplicationTests {
                     .then()
                     .statusCode(200)
                     .and()
-                    .body("content.name", hasItems(IZABELA, MIESZKO, nameBob),
-                            "content.surname", hasItems(CZAJKOWSKA, PIERWSZY, surnameSnail),
-                            "content.peselNumber", hasItems(VALID_PESEL, secondPesel, thirdPesel));
+                    .body("content", hasItem(
+                            allOf(
+                                    hasEntry("name", NAME_2),
+                                    hasEntry("surname", SURNAME_2),
+                                    hasEntry("peselNumber", secondPesel))))
+                    .and()
+                    .body("content", hasItem(
+                            allOf(
+                                    hasEntry("name", NAME_1),
+                                    hasEntry("surname", SURNAME_1),
+                                    hasEntry("peselNumber", VALID_PESEL)))
+                    );
         }
     }
 }

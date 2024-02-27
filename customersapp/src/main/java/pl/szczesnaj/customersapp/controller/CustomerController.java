@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,15 +68,21 @@ class CustomerController {
     @DeleteMapping(value = "/{peselNum}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable String peselNum) {
         boolean isSuccess = customerService.deleteCustomer(peselNum);
-        if(isSuccess) {
+        if (isSuccess) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping(value = "/{peselNum}")
-    public ResponseEntity<Customer> editCustomer(@RequestBody @Valid Customer customerRequest) {
-        Optional<Customer> customer = customerService.editCustomer(customerRequest);
+    public ResponseEntity<Customer> editCustomer(@PathVariable("peselNum") String peselNumber, @RequestBody @Valid Customer customerRequest) {
+        Optional<Customer> customer;
+        try {
+            customer = customerService.editCustomer(peselNumber, customerRequest);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         return customer.map(c -> new ResponseEntity<>(c, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -86,7 +91,7 @@ class CustomerController {
     public ResponseEntity<Page<Customer>> getAllCustomers(@RequestParam(required = false) Integer page, Sort.Direction sort) {
         int pageNumber = page != null && page >= 0 ? page : 0;
         Page<Customer> customers = customerService.getCustomers(pageNumber, sort);
-        if(customers.isEmpty()){
+        if (customers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(customers, HttpStatus.OK);

@@ -5,6 +5,9 @@
 
 package pl.szczesnaj.customersapp.service;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,7 +65,7 @@ public class CustomerService {
     public boolean deleteCustomer(String peselNum) {
         Optional<Customer> customerToDelete = findByPeselNum(peselNum);
         customerToDelete.ifPresent(customerRepository::delete);
-        if(customerToDelete.isPresent()){
+        if (customerToDelete.isPresent()) {
             return true;
         }
 
@@ -74,8 +77,16 @@ public class CustomerService {
     }
 
     @Transactional
-    public Optional<Customer> editCustomer(Customer customerRequest) {
-        Optional<Customer> customer = customerRepository.findCustomerByPeselNum(customerRequest.getPeselNumber());
+    public Optional<Customer> editCustomer(
+            @NotEmpty(message = "PESEL number cannot be null or empty")
+            @Size(min = 11, max = 11, message = "PESEL should be 11 digits")
+            @Pattern(regexp = "[\\d]{11}", message = "PESEL should contain only digits")
+            String peselNumber, Customer customerRequest) {
+
+        if (!peselNumber.equals(customerRequest.getPeselNumber())) {
+            throw new IllegalArgumentException("Figa z makiem");
+        }
+        Optional<Customer> customer = customerRepository.findCustomerByPeselNum(peselNumber);
         if (customer.isEmpty()) {
             return Optional.empty();
         }
