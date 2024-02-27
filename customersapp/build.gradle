@@ -46,6 +46,7 @@ repositories {
 
 tasks.named('test') {
     useJUnitPlatform()
+    jvmArgs("-XX:+EnableDynamicAgentLoading")
 }
 
 task generateCustomersAndContacts() {
