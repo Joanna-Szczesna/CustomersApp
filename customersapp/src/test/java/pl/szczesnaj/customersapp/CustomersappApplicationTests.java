@@ -70,6 +70,7 @@ class CustomersappApplicationTests {
                             "name", is(NAME_1),
                             "surname", is(SURNAME_1));
         }
+
         @Test
         void invalidPeselNumber() {
             String toShortPeselNumber = "55555";
