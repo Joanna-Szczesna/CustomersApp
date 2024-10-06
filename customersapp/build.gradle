@@ -32,11 +32,9 @@ repositories {
 
         implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
         implementation group: 'net.sf.supercsv', name: 'super-csv-dozer', version: '2.4.0'
-//        implementation group: 'org.liquibase', name: 'liquibase-core', version: '4.26.0'
 
-//        runtimeOnly 'com.h2database:h2'
-//        runtimeOnly 'mysql:mysql-connector-java'
-        runtimeOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
+        implementation 'com.mysql:mysql-connector-j:9.0.0'
+        implementation 'org.liquibase:liquibase-core:4.29.2'
 
         developmentOnly 'org.springframework.boot:spring-boot-devtools'
         annotationProcessor 'org.projectlombok:lombok'
