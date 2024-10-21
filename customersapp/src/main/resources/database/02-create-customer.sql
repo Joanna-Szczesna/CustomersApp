@@ -1,9 +1,0 @@
---liquibase formatted sql
---changeset szczesnaj:2
-CREATE TABLE CUSTOMER
-(
-    id      BIGINT AUTO_INCREMENT  PRIMARY KEY,
-    PESEL   VARCHAR(11) NOT NULL,
-    NAME VARCHAR(30) NOT NULL,
-    SURNAME VARCHAR(40) NOT NULL
-);

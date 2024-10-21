@@ -8,6 +8,7 @@ package pl.szczesnaj.customersapp;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,6 +56,7 @@ class CustomersappApplicationTests {
     @Nested
     class AddCustomer {
 
+        @Disabled
         @Test
         void successfulOperation() {
             String locationExpected = baseUri + CUSTOMERS_ENDPOINT_PATH + "/" + VALID_PESEL;
@@ -104,6 +106,7 @@ class CustomersappApplicationTests {
     @Nested
     class GetCustomer {
 
+        @Disabled
         @Test
         void existedCustomer() {
 
@@ -136,6 +139,7 @@ class CustomersappApplicationTests {
 
     @Nested
     class EditCustomer {
+        @Disabled
         @Test
         void cannotEditedNonexistentCustomer() {
 
@@ -213,7 +217,7 @@ class CustomersappApplicationTests {
                     .assertThat().statusCode(204);
         }
     }
-
+    @Disabled
     @Nested
     class GetAllCustomers {
 

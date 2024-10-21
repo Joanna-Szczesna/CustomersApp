@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.2.2'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'checkstyle'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'pl.szczesnaj'
@@ -70,4 +71,12 @@ task generateCustomersAndContacts() {
 //                    " 'priva_num ${i}', 'busin_num ${i}' );\n")
 //        }
 //    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'pl.szczesnaj.customersapp.CustomersappApplication.main'
+        )
+    }
 }

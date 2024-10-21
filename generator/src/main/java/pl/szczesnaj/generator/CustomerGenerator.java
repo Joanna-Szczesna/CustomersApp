@@ -59,6 +59,8 @@ public class CustomerGenerator {
 
             int quantity = getRandomNumber(2, 5);
             String contactPayload = addContacts(quantity);
+//            contactPayload += makePayload(Map.of(
+//                    "peselNumber", peselNum));
             int statusCode = addContactsMethods(location, contactPayload);
             System.out.printf("Added methods. Status Code: %s%n", statusCode);
         }
@@ -160,7 +162,7 @@ public class CustomerGenerator {
     }
 
     private String generateEmail() {
-        return "customer" + getRandomNumber(0, 99999) + "@example.com";
+        return "customer" + getRandomNumber(0, 99999) + "@test.com";
     }
 
     private int addContactsMethods(String location, String contactPayload) {

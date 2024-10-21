@@ -1,0 +1,12 @@
+# Use an official java image as the base image
+FROM openjdk:21
+COPY /build/libs/customersapp-0.0.1-SNAPSHOT-all.jar /opt/customerapp.jar
+WORKDIR customersapp/build/libs/
+# RUN javac CustomersappApplication.java
+CMD ["jar", "-jar", "/opt/customerapp.jar"]
+
+#LAbel
+LABEL version="1.0"
+LABEL description="test customerapp"
+
+

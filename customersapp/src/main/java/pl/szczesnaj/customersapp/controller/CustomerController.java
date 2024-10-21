@@ -39,7 +39,9 @@ class CustomerController {
     public ResponseEntity<Customer> getCustomerByPeselNum(@PathVariable String peselNum) {
         Optional<Customer> customer = customerService.getCustomerByPeselNum(peselNum);
         return customer.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> {
+                    throw new CustomerNotFoundException("Customer pesel not found - " + peselNum);
+                });
     }
 
     @PostMapping
@@ -124,5 +126,14 @@ class CustomerController {
                 beanWriter.write(c);
             }
         }
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<CustomerErrorResponse> handleException(CustomerNotFoundException e){
+
+        CustomerErrorResponse error = new CustomerErrorResponse(
+                e.getMessage());
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }

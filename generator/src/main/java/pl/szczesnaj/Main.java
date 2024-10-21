@@ -9,7 +9,7 @@ import pl.szczesnaj.generator.CustomerGenerator;
 
 public class Main {
 
-    public static final int DEFAULT_CUSTOMERS_AMOUNT = 100;
+    public static final int DEFAULT_CUSTOMERS_AMOUNT = 80;
 
     public static void main(String[] args) {
         int customerAmount = getCustomerAmount(args);

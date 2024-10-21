@@ -1,0 +1,16 @@
+
+
+# The Database
+database:
+  image: mysql:5.7
+  ports:
+    - "33061:3306"
+  command: --init-file /src/main/resources/database/init.sql
+  volumes:
+    - ./init.sql://src/main/resources/database/init.sql
+  environment:
+    MYSQL_ROOT_USER: root
+    MYSQL_ROOT_PASSWORD: secret
+    MYSQL_DATABASE: db_app_customer
+    MYSQL_USER: root
+    MYSQL_PASSWORD: secret

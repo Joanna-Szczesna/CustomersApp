@@ -5,11 +5,9 @@
 
 package pl.szczesnaj.customersapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -25,7 +23,6 @@ public class CommunicationMethods {
 
     @Email
     private String emailAddress;
-
     private String residenceAddress;
     private String registeredAddress;
 
@@ -33,7 +30,7 @@ public class CommunicationMethods {
     @Pattern(regexp = "[\\d]{9,11}", message = "Private phone number should contain only digits")
     private String privatePhoneNumber;
 
-    @Size(min = 0, max = 11, message = "Business phone number")
+    @Size(min = 9, max = 11, message = "Business phone number")
     @Pattern(regexp = "[\\d]{9,11}", message = "Business phone number should contain only digits")
     private String businessPhoneNumber;
 }
